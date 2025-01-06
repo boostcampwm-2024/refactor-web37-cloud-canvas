@@ -5,6 +5,7 @@ import useDragNode from './hooks/useDragNode';
 import useZoomPan from './hooks/useZoomPan';
 import useGraphStore from './store/useGraphStore';
 import useSvgStore from './store/useSvgStore';
+import Node from './components/Node';
 
 function App() {
     const svgRef = useRef<SVGSVGElement>(null);
@@ -52,21 +53,18 @@ function App() {
                 onStopDragNode={handleStopDragNode}
             >
                 <GridBackground viewBox={viewBox} dimension={dimension} />
-                {Object.values(nodes).map((node) => {
-                    const { Component, ...restNode } = node;
-                    return (
-                        <Suspense fallback={null} key={node.id}>
-                            <Component
-                                key={node.id}
-                                node={restNode}
-                                dimension={dimension}
-                                isSelected={selectedId === node.id}
-                                onSelect={handleSelect}
-                                onStartDrag={handleStartDragNode}
-                            />
-                        </Suspense>
-                    );
-                })}
+                {Object.values(nodes).map((node) => (
+                    <Suspense fallback={null} key={node.id}>
+                        <Node
+                            key={node.id}
+                            node={node}
+                            dimension={dimension}
+                            isSelected={selectedId === node.id}
+                            onSelect={handleSelect}
+                            onStartDrag={handleStartDragNode}
+                        />
+                    </Suspense>
+                ))}
             </Graph>
         </div>
     );
