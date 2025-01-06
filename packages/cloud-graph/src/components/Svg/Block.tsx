@@ -13,10 +13,10 @@ export const calculateBlockPoints = (size: Required<GridSize>) => {
     const height = GRID_HEIGHT_3D * rows;
 
     return [
-        { x: 0, y: -depth }, // topLeft
-        { x: Math.floor(width / 2), y: Math.floor(height / 2) - depth }, // topRight
-        { x: 0, y: height - depth }, // bottomRight
-        { x: -Math.floor(width / 2), y: Math.floor(height / 2) - depth }, // bottomLeft
+        { x: Math.floor(width / 2), y: -depth }, // topLeft
+        { x: width, y: Math.floor(height / 2) - depth }, // topRight
+        { x: Math.floor(width / 2), y: height - depth }, // bottomRight
+        { x: 0, y: Math.floor(height / 2) - depth }, // bottomLeft
     ];
 };
 
@@ -26,7 +26,10 @@ function Block(props: BlockProps) {
     const points = calculateBlockPoints(size as Required<GridSize>);
 
     return (
-        <>
+        <svg
+            x={-(GRID_WIDTH_3D / 2) * size.cols}
+            style={{ overflow: 'visible' }}
+        >
             <Polygon points={points} fill="#ececed" />
             <Polygon
                 points={[
@@ -49,7 +52,7 @@ function Block(props: BlockProps) {
                 stroke="#83838a"
             />
             {children && children}
-        </>
+        </svg>
     );
 }
 

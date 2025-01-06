@@ -1,57 +1,17 @@
-import { GRID_HEIGHT_3D, GRID_WIDTH_3D } from '@/constants';
-import { Dimension } from '@/types';
+import { GRID_SIZE_2D } from '@/constants';
+import { GridSize } from '@/types';
 
-type StorageProps = {
-    dimension: Dimension;
+type Storage2DProps = {
+    size: GridSize;
 };
 
-const Storage3D = () => {
-    return (
-        <svg
-            x={-GRID_WIDTH_3D / 2 + 14} //INFO: 보정값
-            y={-GRID_HEIGHT_3D / 2 - 26}
-            width="100.626"
-            height="115.695"
-        >
-            <path
-                fill="#4286c5"
-                d="M50.313 1.155v56.693L99.41 29.501z"
-                fillRule="evenodd"
-            ></path>
-            <path
-                fill="#26527b"
-                d="m1.215 29.501 49.098 28.347V1.155z"
-                fillRule="evenodd"
-            ></path>
-            <path fill="none" stroke="#020406" d="M50.313 1.155v56.693"></path>
-            <path
-                fill="#26527b"
-                d="M50.313 57.847 99.41 29.501l-24.549 70.866-24.548 14.173z"
-                fillRule="evenodd"
-            ></path>
-            <path
-                fill="#326ca2"
-                d="m1.215 29.501 49.098 28.347v56.692l-24.55-14.173z"
-                fillRule="evenodd"
-            ></path>
-            <path
-                fill="none"
-                stroke="#0e1e2d"
-                d="m1.215 29.501 49.098 28.347L99.41 29.501 50.313 57.848v56.692"
-            ></path>
-            <path
-                fill="none"
-                stroke="#000000"
-                d="M50.313 1.155 1.214 29.501 l24.549 70.866 24.549 14.173 24.548 -14.173 24.549-70.866z"
-                strokeWidth="2"
-            ></path>
-        </svg>
-    );
-};
+function Storage3D(props: Storage2DProps) {
+    const { size } = props;
+    const width = GRID_SIZE_2D * size.cols;
+    const height = GRID_SIZE_2D * size.rows;
 
-const Storage2D = () => {
     return (
-        <svg width="90" height="90">
+        <svg width={width} height={height}>
             <path fill="#52ae2f" d="M0 0h90v90H0z"></path>
             <path
                 fill="#ffffff"
@@ -59,11 +19,6 @@ const Storage2D = () => {
             ></path>
         </svg>
     );
-};
-
-function Storage(props: StorageProps) {
-    const { dimension } = props;
-    return dimension === '3d' ? <Storage3D /> : <Storage2D />;
 }
 
-export default Storage;
+export default Storage3D;
