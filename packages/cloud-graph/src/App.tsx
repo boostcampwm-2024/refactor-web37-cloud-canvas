@@ -1,11 +1,13 @@
 import Graph from '@/components/Graph';
 import GridBackground from '@/components/GridBackground';
 import { Suspense, useRef } from 'react';
+import ConnectionLine from './components/ConnectionLine';
+import Node from './components/Node';
+import useConnection from './hooks/useConnection';
 import useDragNode from './hooks/useDragNode';
 import useZoomPan from './hooks/useZoomPan';
 import useGraphStore from './store/useGraphStore';
 import useSvgStore from './store/useSvgStore';
-import Node from './components/Node';
 
 function App() {
     const svgRef = useRef<SVGSVGElement>(null);
@@ -39,6 +41,25 @@ function App() {
         dimension,
     });
 
+    const {
+        isConnecting,
+        startPoint,
+        endPoint,
+        startConnection: handleStartConnection,
+        connect: handleConnect,
+        stopConnection: handleStopConnection,
+    } = useConnection({
+        svgRef,
+        dimension,
+    });
+
+    const handleMouseDown = (e: React.MouseEvent<SVGElement>) => {
+        e.stopPropagation();
+        if (!selectedId) return;
+        const { clientX, clientY } = e;
+        handleStartConnection(nodes[selectedId], { x: clientX, y: clientY });
+    };
+
     return (
         <div style={{ width: '100%', height: '100%' }}>
             <Graph
@@ -51,6 +72,8 @@ function App() {
                 onDeselect={handleDeselect}
                 onDragNode={handleDragNode}
                 onStopDragNode={handleStopDragNode}
+                onConnect={handleConnect}
+                onStopConnection={handleStopConnection}
             >
                 <GridBackground viewBox={viewBox} dimension={dimension} />
                 {Object.values(nodes).map((node) => (
@@ -65,6 +88,17 @@ function App() {
                         />
                     </Suspense>
                 ))}
+                {isConnecting && (
+                    <ConnectionLine from={startPoint!} to={endPoint!} />
+                )}
+
+                <circle
+                    cx={100}
+                    cy={100}
+                    fill="blue"
+                    r={30}
+                    onMouseDown={handleMouseDown}
+                />
             </Graph>
         </div>
     );

@@ -10,6 +10,8 @@ interface GraphProps extends Omit<React.ComponentProps<'svg'>, 'viewBox'> {
     onDragNode: (point: ScreenPoint) => void;
     onStopDragNode: () => void;
     onDeselect: () => void;
+    onConnect: (point: ScreenPoint) => void;
+    onStopConnection: () => void;
 }
 
 const Graph = forwardRef<SVGSVGElement, GraphProps>(function (props, ref) {
@@ -23,11 +25,14 @@ const Graph = forwardRef<SVGSVGElement, GraphProps>(function (props, ref) {
         onDragNode,
         onStopDragNode,
         onDeselect,
+        onConnect,
+        onStopConnection,
         ...svgProps
     } = props;
 
     const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
         onDeselect();
+        onStopConnection();
         const { clientX, clientY } = e;
         onStartPan({ x: clientX, y: clientY });
     };
@@ -36,6 +41,7 @@ const Graph = forwardRef<SVGSVGElement, GraphProps>(function (props, ref) {
         const { clientX, clientY } = e;
         onMovePan({ x: clientX, y: clientY });
         onDragNode({ x: clientX, y: clientY });
+        onConnect({ x: clientX, y: clientY });
     };
 
     const handleMouseUp = () => {

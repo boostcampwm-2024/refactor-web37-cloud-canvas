@@ -87,3 +87,26 @@ export const getConnectorPoints = (node: Node, dimension: Dimension) => {
         ),
     );
 };
+
+export const getNearestPoint = (points: ScreenPoint[], target: ScreenPoint) => {
+    const nearest = points.reduce(
+        (prev, curr) => {
+            const distance =
+                (curr.x - target.x) ** 2 + (curr.y - target.y) ** 2;
+            if (distance < prev.distance) {
+                return {
+                    point: curr,
+                    distance,
+                };
+            }
+
+            return prev;
+        },
+        {
+            point: { x: 0, y: 0 },
+            distance: Infinity,
+        },
+    );
+
+    return nearest.point;
+};
