@@ -1,5 +1,9 @@
 import type { Dimension, Node, ScreenPoint } from '@/types';
-import { getNearestPoint, getSvgPoint, gridToScreen } from '@/utils';
+import {
+    getAbsoluteConnectorPoints,
+    getNearestPoint,
+    getSvgPoint,
+} from '@/utils';
 import { useRef, useState } from 'react';
 
 type UseConnectNodeProps = {
@@ -15,27 +19,6 @@ const useConnection = (props: UseConnectNodeProps) => {
     const [endPoint, setEndPoint] = useState<ScreenPoint | null>(null);
     const [isConnecting, setIsConnecting] = useState(false);
 
-    const getAbsoluteConnectorPoints = (node: Node) => {
-        const { point, size, connectors } = node;
-        const centerGridPoint = {
-            col: point.col + size[dimension].cols / 2,
-            row: point.row + size[dimension].rows / 2,
-        };
-
-        const gridPoints = connectors.map((connector) => ({
-            col: centerGridPoint.col + connector.col,
-            row: centerGridPoint.row + connector.row,
-        }));
-        const screenPoints = gridPoints.map((gridPoint) =>
-            gridToScreen(gridPoint, dimension),
-        );
-
-        return {
-            grid: gridPoints,
-            screen: screenPoints,
-        };
-    };
-
     /**
      * @param node - from node
      * @param point - cursor point
@@ -43,7 +26,10 @@ const useConnection = (props: UseConnectNodeProps) => {
     const startConnection = (node: Node, point: ScreenPoint) => {
         fromNode.current = node;
 
-        const connectorPoints = getAbsoluteConnectorPoints(fromNode.current);
+        const connectorPoints = getAbsoluteConnectorPoints(
+            fromNode.current,
+            dimension,
+        );
         const svgPoint = getSvgPoint(svgRef.current!, point);
 
         const nearestPoint = getNearestPoint(connectorPoints.screen, svgPoint);
@@ -55,7 +41,10 @@ const useConnection = (props: UseConnectNodeProps) => {
 
     const connect = (point: ScreenPoint) => {
         if (fromNode.current === null || !isConnecting) return;
-        const connectorPoints = getAbsoluteConnectorPoints(fromNode.current);
+        const connectorPoints = getAbsoluteConnectorPoints(
+            fromNode.current,
+            dimension,
+        );
         const svgPoint = getSvgPoint(svgRef.current!, point);
 
         const nearestPoint = getNearestPoint(connectorPoints.screen, svgPoint);

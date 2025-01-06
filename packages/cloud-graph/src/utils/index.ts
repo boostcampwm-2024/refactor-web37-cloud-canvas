@@ -110,3 +110,27 @@ export const getNearestPoint = (points: ScreenPoint[], target: ScreenPoint) => {
 
     return nearest.point;
 };
+
+export const getAbsoluteConnectorPoints = (
+    node: Node,
+    dimension: Dimension,
+) => {
+    const { point, size, connectors } = node;
+    const centerGridPoint = {
+        col: point.col + size[dimension].cols / 2,
+        row: point.row + size[dimension].rows / 2,
+    };
+
+    const gridPoints = connectors.map((connector) => ({
+        col: centerGridPoint.col + connector.col,
+        row: centerGridPoint.row + connector.row,
+    }));
+    const screenPoints = gridPoints.map((gridPoint) =>
+        gridToScreen(gridPoint, dimension),
+    );
+
+    return {
+        grid: gridPoints,
+        screen: screenPoints,
+    };
+};
