@@ -1,33 +1,48 @@
+import { IsoMatrix } from '@/constants';
 import { ScreenPoint } from '@/types';
 
 type ConnectionLineProps = {
     from: ScreenPoint;
     to: ScreenPoint;
 };
+
+const isoMatrixInverse = IsoMatrix.inverse();
+
+function screenToIsoPoint(x: number, y: number) {
+    const p = isoMatrixInverse.transformPoint({ x, y });
+    return { x: p.x, y: p.y };
+}
+
 function ConnectionLine(props: ConnectionLineProps) {
     const { from, to } = props;
-    const linePathD = `M ${from.x} ${from.y} L ${to.x} ${to.y}`;
+
+    //INFO: 역함수를 통해 위치 조정
+    const isoFrom = screenToIsoPoint(from.x, from.y);
+    const isoTo = screenToIsoPoint(to.x, to.y);
 
     return (
-        <g>
+        <g transform={IsoMatrix.toString()}>
             <defs>
                 <marker
-                    id="arrowhead"
-                    markerWidth="5"
-                    markerHeight="5"
-                    refX="5"
-                    refY="2.5"
-                    orient="auto"
+                    id="arrow"
+                    viewBox="0 0 10 10"
+                    refX="10"
+                    refY="5"
+                    markerWidth="15"
+                    markerHeight="15"
+                    orient="auto-start-reverse"
                 >
-                    <path d="M 0 0 L 5 2.5 L 0 5 Z" fill="#000" />
+                    <path d="M 0 0 L 10 5 L 0 10 z" />
                 </marker>
             </defs>
-            <path
-                d={linePathD}
-                stroke="#000"
-                fill="none"
-                strokeWidth={3}
-                markerEnd="url(#arrowhead)"
+
+            <line
+                x1={isoFrom.x}
+                y1={isoFrom.y}
+                x2={isoTo.x}
+                y2={isoTo.y}
+                stroke="black"
+                marker-end="url(#arrow)"
             />
         </g>
     );
