@@ -94,19 +94,6 @@ services:
             - cloud-canvas-network
         restart: unless-stopped
 
-    front:
-        build:
-            context: ../
-            dockerfile: apps/client/Dockerfile.CI
-        container_name: front
-        environment:
-            VITE_API_URL: ${VITE_API_URL}
-        ports:
-            - '5001:5000'
-        networks:
-            - cloud-canvas-network
-        restart: unless-stopped
-
     # 로깅이 필요할 경우 사용
     # fluentd:
     #     build: ./monitorin/logging/fluentd/

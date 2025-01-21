@@ -81,19 +81,6 @@ services:
             - cloud-canvas-network
         restart: unless-stopped
 
-    front-hub:
-        build:
-            context: ../
-            dockerfile: apps/hub/Dockerfile.CI
-        container_name: hub
-        environment:
-            BACK_URL: ${BACK_URL}
-        ports:
-            - '3001:3000'
-        networks:
-            - cloud-canvas-network
-        restart: unless-stopped
-
     front:
         build:
             context: ../
