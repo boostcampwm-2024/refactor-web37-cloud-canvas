@@ -31,10 +31,6 @@ jobs:
             - name: Build applications
               run: pnpm turbo build
 
-    build-and-push:
-        needs: CI
-        runs-on: ubuntu-latest
-        steps:
             - uses: actions/checkout@v4
             - name: NCP registry login
               uses: docker/login-action@v3
