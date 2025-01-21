@@ -34,29 +34,8 @@ jobs:
     build-and-push:
         needs: CI
         runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                service:
-                    [
-                        {
-                            name: 'front',
-                            path: './apps/client/Dockerfile.CI',
-                            tags: ['dev', '${{ github.sha }}'],
-                        },
-                        {
-                            name: 'front-hub',
-                            path: './apps/hub/Dockerfile.CI',
-                            tags: ['dev', '${{ github.sha }}'],
-                        },
-                        {
-                            name: 'back',
-                            path: './apps/server/Dockerfile.CI',
-                            tags: ['dev', '${{ github.sha }}'],
-                        },
-                    ]
         steps:
             - uses: actions/checkout@v4
-
             - name: NCP registry login
               uses: docker/login-action@v3
               with:
@@ -64,53 +43,41 @@ jobs:
                   username: ${{ secrets.NCP_ACCESS_KEY }}
                   password: ${{ secrets.NCP_SECRET_KEY }}
 
-            - name: Build and push ${{ matrix.service.name }} image
+            - name: Docker front image build and push
               uses: docker/build-push-action@v3
               with:
                   context: .
-                  file: ${{ matrix.service.path }}
+                  file: ./apps/client/Dockerfile.CI
                   push: true
                   tags: |
-                      cloud-canvas.kr.ncr.ntruss.com/${{ matrix.service.name }}:${{ join(matrix.service.tags, '\n') }}
-                      cache-from: type=registry,ref=${{ secrets.NCP_REGISTRY }}/${{ matrix.service.name }}:dev
-                      cache-to: type=registry,ref=${{ secrets.NCP_REGISTRY }}/${{ matrix.service.name }}:cache,mode=max
+                      cloud-canvas.kr.ncr.ntruss.com/front:dev
+                      cloud-canvas.kr.ncr.ntruss.com/front:${{ github.sha }}
+                  cache-from: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front:dev
+                  cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front:dev,mode=max
 
-        # - name: NCP registry login
-        #   uses: docker/login-action@v3
-        #   with:
-        #       registry: ${{ secrets.NCP_REGISTRY }}
-        #       username: ${{ secrets.NCP_ACCESS_KEY }}
-        #       password: ${{ secrets.NCP_SECRET_KEY }}
+            - name: Docker front-hub image build and push
+              uses: docker/build-push-action@v3
+              with:
+                  context: .
+                  file: ./apps/hub/Dockerfile.CI
+                  push: true
+                  tags: |
+                      cloud-canvas.kr.ncr.ntruss.com/front-hub:dev
+                      cloud-canvas.kr.ncr.ntruss.com/front-hub:${{ github.sha }}
+                  cache-from: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front-hub:dev
+                  cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front-hub:dev,mode=max
 
-        # - name: Docker front image build and push
-        #   uses: docker/build-push-action@v3
-        #   with:
-        #       context: .
-        #       file: ./apps/client/Dockerfile.CI
-        #       push: true
-        #       tags: |
-        #           cloud-canvas.kr.ncr.ntruss.com/front:dev
-        #           cloud-canvas.kr.ncr.ntruss.com/front:${{ github.sha }}
-
-        # - name: Docker front-hub image build and push
-        #   uses: docker/build-push-action@v3
-        #   with:
-        #       context: .
-        #       file: ./apps/hub/Dockerfile.CI
-        #       push: true
-        #       tags: |
-        #           cloud-canvas.kr.ncr.ntruss.com/front-hub:dev
-        #           cloud-canvas.kr.ncr.ntruss.com/front-hub:${{ github.sha }}
-
-        # - name: Docker back image build and push
-        #   uses: docker/build-push-action@v3
-        #   with:
-        #       context: .
-        #       file: ./apps/server/Dockerfile.CI
-        #       push: true
-        #       tags: |
-        #           cloud-canvas.kr.ncr.ntruss.com/back:dev
-        #           cloud-canvas.kr.ncr.ntruss.com/back:${{ github.sha }}
+            - name: Docker back image build and push
+              uses: docker/build-push-action@v3
+              with:
+                  context: .
+                  file: ./apps/server/Dockerfile.CI
+                  push: true
+                  tags: |
+                      cloud-canvas.kr.ncr.ntruss.com/back:dev
+                      cloud-canvas.kr.ncr.ntruss.com/back:${{ github.sha }}
+                  cache-from: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/back:dev
+                  cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/back:dev,mode=max
 
     # CD:
     #     needs: CI
