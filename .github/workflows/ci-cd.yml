@@ -74,6 +74,8 @@ jobs:
                   push: true
                   tags: |
                       cloud-canvas.kr.ncr.ntruss.com/${{ matrix.service.name }}:${{ join(matrix.service.tags, '\n') }}
+                      cache-from: type=registry,ref=${{ secrets.NCP_REGISTRY }}/${{ matrix.service.name }}:dev
+                      cache-to: type=registry,ref=${{ secrets.NCP_REGISTRY }}/${{ matrix.service.name }}:cache,mode=max
 
         # - name: NCP registry login
         #   uses: docker/login-action@v3
