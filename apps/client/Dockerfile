@@ -1,9 +1,6 @@
 FROM node:20-alpine AS build
- 
 WORKDIR /build
- 
 COPY . .
-
 RUN npm install -g pnpm && pnpm install && pnpm build
 
 FROM nginx:alpine AS production
