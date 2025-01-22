@@ -52,8 +52,8 @@ jobs:
                   tags: |
                       cloud-canvas.kr.ncr.ntruss.com/front:dev
                       cloud-canvas.kr.ncr.ntruss.com/front:${{ github.sha }}
-                  cache-from: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front:dev
-                  cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front:dev,mode=max
+                  cache-from: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front:buildcache
+                  cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front:buildcache,mode=max
 
             - name: Docker front-hub image build and push
               uses: docker/build-push-action@v6
@@ -64,8 +64,8 @@ jobs:
                   tags: |
                       cloud-canvas.kr.ncr.ntruss.com/front-hub:dev
                       cloud-canvas.kr.ncr.ntruss.com/front-hub:${{ github.sha }}
-                  cache-from: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front-hub:dev
-                  cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front-hub:dev,mode=max
+                  cache-from: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front-hub:buildcache
+                  cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front-hub:buildcache,mode=max
 
             - name: Docker back image build and push
               uses: docker/build-push-action@v6
@@ -76,8 +76,8 @@ jobs:
                   tags: |
                       cloud-canvas.kr.ncr.ntruss.com/back:dev
                       cloud-canvas.kr.ncr.ntruss.com/back:${{ github.sha }}
-                  cache-from: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/back:dev
-                  cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/back:dev,mode=max
+                  cache-from: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/back:buildcache
+                  cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/back:buildcache,mode=max
 
     # CD:
     #     needs: CI
