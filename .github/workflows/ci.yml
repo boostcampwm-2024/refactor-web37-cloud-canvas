@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI
 on:
     push:
         branches:
@@ -15,6 +15,23 @@ jobs:
             TURBO_TEAM: ${{ vars.TURBO_TEAM }}
         steps:
             - uses: actions/checkout@v4
+
+            - uses: dorny/paths-filter@v3
+              id: changes
+              with:
+                  base: ${{ github.repository_default_branch }}
+                  filters: |
+                      front:
+                        - './apps/client/**'
+                        - './packages/terraform/**'
+                        - './packages/cloud-graph/**'
+                      front-hub:
+                        - './apps/hub/**'
+                      back:
+                        - './apps/server/**'
+                        - './packages/ncloud-sdk/**'
+                        - './packages/terraform/**'
+
             - name: Install pnpm
               uses: pnpm/action-setup@v4
               with:
@@ -44,6 +61,7 @@ jobs:
               uses: docker/setup-buildx-action@v3
 
             - name: Docker front image build and push
+              if: steps.changes.outputs.front == 'true'
               uses: docker/build-push-action@v6
               with:
                   context: .
@@ -56,6 +74,7 @@ jobs:
                   cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front:buildcache,mode=max
 
             - name: Docker front-hub image build and push
+              if: steps.changes.outputs.front-hub == 'true'
               uses: docker/build-push-action@v6
               with:
                   context: .
@@ -68,6 +87,7 @@ jobs:
                   cache-to: type=registry,ref=cloud-canvas.kr.ncr.ntruss.com/front-hub:buildcache,mode=max
 
             - name: Docker back image build and push
+              if: steps.changes.outputs.back == 'true'
               uses: docker/build-push-action@v6
               with:
                   context: .
