@@ -10,7 +10,6 @@
             "persistent": true
         },
         "build": {
-            "dependsOn": ["clean"],
             "inputs": ["$TURBO_DEFAULT$", "!README.md", "!CHANGELOG.md"],
             "outputs": ["dist/**", ".next/**"]
         },
