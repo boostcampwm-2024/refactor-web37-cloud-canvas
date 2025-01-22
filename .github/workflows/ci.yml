@@ -3,10 +3,8 @@ on:
     push:
         branches:
             - development
-
 concurrency:
     group: cloud-canvas
-
 jobs:
     CI:
         runs-on: ubuntu-latest
