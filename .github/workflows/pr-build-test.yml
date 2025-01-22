@@ -13,19 +13,25 @@ on:
 jobs:
     build-test:
         runs-on: ubuntu-latest
+        env:
+            TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+            TURBO_TEAM: ${{ vars.TURBO_TEAM }}
         steps:
-            - name: Check out repository
-              uses: actions/checkout@v3
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v2
+            - uses: actions/checkout@v4
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
               with:
                   version: 9.12.3
+            - name: Use Node.js 20
+              uses: actions/setup-node@v4
+              with:
                   node-version: 20
-                  cache: true
+                  cache: 'pnpm'
+            - name: Install dependencies
+              run: pnpm install
 
-            - name: Install dependencies with pnpm
-              run: pnpm install --no-frozen-lockfile
+            - name: Install turbo
+              run: npm install -g turbo
 
-            - name: Build the project
-              run: pnpm build
+            - name: Build applications
+              run: pnpm turbo build
