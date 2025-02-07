@@ -27,19 +27,11 @@ services:
             - ../../config/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
             - ../../config/mysql/log.cnf:/etc/mysql/conf.d/log.cnf:ro
         healthcheck:
-            test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+            test: ['CMD-SHELL', 'mysqladmin ping -h localhost -u ping_user']
             interval: 10s
             timeout: 5s
             retries: 5
             start_period: 20s
-        command:
-            - sh
-            - -c
-            - |
-                mkdir -p /var/log/mysql && \
-                touch /var/log/mysql/general.log && \
-                tail -f /var/log/mysql/general.log & \
-                exec docker-entrypoint.sh mysqld
         networks:
             - cloud-canvas-network
         restart: unless-stopped
