@@ -25,36 +25,23 @@ services:
         container_name: mysql
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
-            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
         ports:
-            - '3306:3306'
+            - '${MYSQL_PORT}:3306'
         volumes:
-            - ../config/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+            - ../config/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
             - ../config/mysql/log.cnf:/etc/mysql/conf.d/log.cnf:ro
+            - /var/log/mysql:/var/log/mysql
         healthcheck:
-            test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+            test: ['CMD-SHELL', 'mysqladmin ping -h localhost -u ping_user']
             interval: 10s
             timeout: 5s
             retries: 5
             start_period: 20s
-        command:
-            - sh
-            - -c
-            - |
-                mkdir -p /var/log/mysql && \
-                touch /var/log/mysql/general.log && \
-                tail -f /var/log/mysql/general.log & \
-                exec docker-entrypoint.sh mysqld
-        # logging:
-        #     driver: 'fluentd'
-        #     options:
-        #         fluentd-address: 'localhost:24224'
-        #         fluentd-async-connect: 'true'
-        #         tag: 'mysql'
         networks:
             - cloud-canvas-network
-            - cloud-canvas-database-network
         restart: unless-stopped
 
     back:
@@ -76,7 +63,7 @@ services:
                 condition: service_healthy
             redis:
                 condition: service_healthy
-        entrypoint: sh -c "cd apps/server/ && npx prisma migrate reset --force && npx prisma generate && node ./dist/src/main.js"
+        entrypoint: sh -c "cd apps/server && npx prisma migrate reset --force && node ./dist/src/main.js"
         networks:
             - cloud-canvas-network
         restart: unless-stopped

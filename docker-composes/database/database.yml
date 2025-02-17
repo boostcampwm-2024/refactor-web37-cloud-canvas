@@ -24,8 +24,9 @@ services:
         ports:
             - '${MYSQL_PORT}:3306'
         volumes:
-            - ../../config/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+            - ../../config/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
             - ../../config/mysql/log.cnf:/etc/mysql/conf.d/log.cnf:ro
+            - /var/log/mysql:/var/log/mysql
         healthcheck:
             test: ['CMD-SHELL', 'mysqladmin ping -h localhost -u ping_user']
             interval: 10s
