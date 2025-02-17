@@ -12,6 +12,11 @@ services:
             timeout: 5s
         networks:
             - cloud-canvas-network
+        logging:
+            driver: 'fluentd'
+            options:
+                fluentd-address: 'localhost:24224'
+                tag: 'redis'
 
     mysql:
         image: mysql:8.0
@@ -36,6 +41,11 @@ services:
         networks:
             - cloud-canvas-network
         restart: unless-stopped
+        logging:
+            driver: 'fluentd'
+            options:
+                fluentd-address: 'localhost:24224'
+                tag: 'redis'
 networks:
     cloud-canvas-network:
         driver: bridge
