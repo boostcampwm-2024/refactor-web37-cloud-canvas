@@ -4,6 +4,10 @@ services:
         container_name: redis
         ports:
             - '${REDIS_PORT}:6379'
+        volumes:
+            - ../../config/redis:/usr/local/etc/redis
+            - /var/log/redis:/var/log
+        entrypoint: ['redis-server', '/usr/local/etc/redis/redis.conf']
         healthcheck:
             test: ['CMD', 'redis-cli', 'ping']
             interval: 30s
@@ -12,11 +16,6 @@ services:
             timeout: 5s
         networks:
             - cloud-canvas-network
-        logging:
-            driver: 'fluentd'
-            options:
-                fluentd-address: 'localhost:24224'
-                tag: 'redis'
 
     mysql:
         image: mysql:8.0
@@ -41,11 +40,7 @@ services:
         networks:
             - cloud-canvas-network
         restart: unless-stopped
-        logging:
-            driver: 'fluentd'
-            options:
-                fluentd-address: 'localhost:24224'
-                tag: 'redis'
+
 networks:
     cloud-canvas-network:
         driver: bridge
