@@ -1,10 +1,10 @@
 [mysqld]
 general_log=ON
 log_output=FILE
-general_log_file=/var/log/mysql/general.log
-log_error=/var/log/mysql/error.err
+general_log_file=/var/log/mysql/general/general.log
+log_error=/var/log/mysql/error/error.err
 slow_query_log=ON
-slow_query_log_file=/var/log/mysql/slow.log
+slow_query_log_file=/var/log/mysql/slow/slow.log
 long_query_time=1
 log-queries-not-using-indexes
-log-bin=/var/log/mysql/bin.log
+log-bin=/var/log/mysql/binary/bin.log
