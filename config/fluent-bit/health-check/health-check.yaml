@@ -1,0 +1,10 @@
+pipeline:
+    inputs:
+        - name: health
+          host: 127.0.0.1
+          port: 2020
+          interval_sec: 1
+          interval_nsec: 0
+    outputs:
+        - name: stdout
+          match: '*'

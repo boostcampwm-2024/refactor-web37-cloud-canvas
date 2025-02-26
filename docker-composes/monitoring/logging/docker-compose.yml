@@ -13,7 +13,7 @@ services:
         build: ./fluentd/
         container_name: fluentd
         volumes:
-            - ./fluentd/conf/fluent.conf:/fluentd/etc/fluent.conf
+            - ../../../config/fluentd/fluent.conf:/fluentd/etc/fluent.conf
         ports:
             - '24224:24224'
             - '24224:24224/udp'

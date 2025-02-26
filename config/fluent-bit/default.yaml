@@ -1,0 +1,8 @@
+service:
+    flush: 1
+    log_level: info
+    http_server: true
+    http_listen: 0.0.0.0
+    http_port: 2020
+includes:
+    - /etc/fluent-bit/fluent-bit.conf.d/health-check/health-check.yaml
